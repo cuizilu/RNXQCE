@@ -221,6 +221,9 @@ subroutine read_rinex_data(rnxohd,rnxodt,flag,epochsum)
 			if(tmp(30:30)==" ".and.tmp(28:28)==" ".and.tmp(29:29)/=" ")then
 				numsatflag=0
 				read(tmp,'(1x,i2.2,4(1x,i2),f11.7,2x,i1,i3)')cal%year,cal%month,cal%day,cal%hour,cal%minute,cal%second,epochflag,numsat!get the epoch head
+				if(epochflag==4)then
+					cycle
+				endif
 				if(cal%year<100)then
                 	if(cal%year<30)then
                 	    cal%year=cal%year+2000
@@ -280,6 +283,9 @@ subroutine read_rinex_data(rnxohd,rnxodt,flag,epochsum)
 			if(tmp(1:1)==">")then
 				read(tmp,'(2x,i4,4(1x,i2.2),f11.7,2x,i1,i3,6x,f15.12)')cal%year,cal%month,cal%day,cal%hour,cal%minute,&
 				cal%second,epochflag,numsat,receiverclkbias
+				if(epochflag==4)then
+					cycle
+				endif
 				call caltojd(cal,jd1)
                 if(jd0%day==-1)then
                     jd0=jd1
