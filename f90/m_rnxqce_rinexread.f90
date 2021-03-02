@@ -259,6 +259,9 @@ subroutine read_rinex_data(rnxohd,rnxodt,flag,epochsum)
 					endif
 				enddo
 			else
+				if(epochflag==4)then
+					cycle
+				endif
 				numsatflag=numsatflag+1
 				tmp_near(1)=tmp
 				do i=1,get_lines(rnxohd%obstypenumber,5)-1
@@ -297,6 +300,9 @@ subroutine read_rinex_data(rnxohd,rnxodt,flag,epochsum)
                 rnxodt(epoch)%numsat=numsat
 				rnxodt(epoch)%receiverclkbias=receiverclkbias
 			else
+				if(epochflag==4)then
+					cycle
+				endif
 				pos(1)=get_satpos(tmp(1:3))
 				rnxodt(epoch)%satobsdata(pos(1))%prn=tmp(1:3)
 				ix=index('GCE',tmp(1:1))    
