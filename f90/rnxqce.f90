@@ -53,7 +53,9 @@ program rnxqce
 	    call qc_snr(rnxohd,rnxodt,epochsum,CTRL,flag,lack)
 	    call qc_slip(rnxohd,rnxodt,epochsum,CTRL,flag,lack)
 	    call qc_mp(rnxohd,rnxodt,epochsum,CTRL,flag,lack)
-		call vzprint(vz,epochsum)
+		if(CTRL%frnxn/='')then
+			call vzprint(vz,epochsum)
+		endif
 	endif
 	if(CTRL%lmr) then
 !	  ! modify antenna type receiver type and antenna offsets
