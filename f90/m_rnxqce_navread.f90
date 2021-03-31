@@ -111,7 +111,7 @@ subroutine read_nav_head(path,hdr)
 implicit none
 	type(T_rnxnhd)::hdr
 	integer::i,nh,n,pp,flag,corrnum,ionnum,corrflag,ionflag,ios,jump
-	character(len=tmplength)::tmp,tmp_ion(10),tmp_sys(10)
+	character(len=tmplength)::tmp,tmp_ion(1000),tmp_sys(1000)
 	character(len=stringlength)::path
 	real*8 ww,qq
 	nh=0

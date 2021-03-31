@@ -1,6 +1,6 @@
 ! rinex quality checking and editing
 ! rnxqce -rnxo bjfs1000.20o -qc -rnxn brdm100.20p 
-!        -freq G12 C26 R12 E25 
+!        -freq G12 C26 E25 
 
 ! rnxqce -rnxo bjfs1000.20o -hd.ant TRM59800.00
 !        -hd.rec TRIMBLE NETR9  -hd.enu 0.0 0.0 0.0  
