@@ -235,7 +235,7 @@ subroutine read_rinex_data(rnxohd,rnxodt,flag,epochsum)
 				if(jd0%day==-1)then
 					jd0=jd1
 				endif
-				epoch=1+anint(((jd1%day-jd0%day)*24*60*60+jd1%tod%sn-jd0%tod%sn)/rnxohd%interval)
+				epoch=1+anint(((jd1%day-jd0%day)*24*60*60+jd1%tod%sn+anint(jd1%tod%tos)-jd0%tod%sn-anint(jd0%tod%tos))/rnxohd%interval)
 				rnxodt(epoch)%cal=cal
 				call caltogps(cal,rnxodt(epoch)%epoch)
 				rnxodt(epoch)%epochflag=epochflag
@@ -282,8 +282,12 @@ subroutine read_rinex_data(rnxohd,rnxodt,flag,epochsum)
 					endif
 				enddo
 			endif
-		else
+		else!if rinex > 3
 			if(tmp(1:1)==">")then
+				if(tmp(3:3)==" ")then
+					print*,"check your rinex, there may be some error after epoch",epoch
+					exit
+				endif
 				read(tmp,'(2x,i4,4(1x,i2.2),f11.7,2x,i1,i3,6x,f15.12)')cal%year,cal%month,cal%day,cal%hour,cal%minute,&
 				cal%second,epochflag,numsat,receiverclkbias
 				if(epochflag==4)then
@@ -293,7 +297,7 @@ subroutine read_rinex_data(rnxohd,rnxodt,flag,epochsum)
                 if(jd0%day==-1)then
                     jd0=jd1
                 endif
-                epoch=1+anint(((jd1%day-jd0%day)*24*60*60+jd1%tod%sn-jd0%tod%sn)/rnxohd%interval)
+				epoch=1+anint(((jd1%day-jd0%day)*24*60*60+jd1%tod%sn+anint(jd1%tod%tos)-jd0%tod%sn-anint(jd0%tod%tos))/rnxohd%interval)
                 rnxodt(epoch)%cal=cal
 				call caltogps(cal,rnxodt(epoch)%epoch)
                 rnxodt(epoch)%epochflag=epochflag
@@ -304,6 +308,9 @@ subroutine read_rinex_data(rnxohd,rnxodt,flag,epochsum)
 					cycle
 				endif
 				pos(1)=get_satpos(tmp(1:3))
+				if(pos(1)==0)then
+					cycle
+				endif
 				rnxodt(epoch)%satobsdata(pos(1))%prn=tmp(1:3)
 				ix=index('GCE',tmp(1:1))    
 				if(pos(1)/=0)then
@@ -322,6 +329,7 @@ subroutine read_rinex_data(rnxohd,rnxodt,flag,epochsum)
 		endif
 	enddo
 	close(123)
+	epochsum=epoch
 	if(rnxohd%version<3)then
 		allocate(rnxohd%system(rnxohd%systemnumber))
 		do i=1,rnxohd%systemnumber
