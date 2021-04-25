@@ -118,6 +118,9 @@ subroutine read_rinex_head(path,rnxohd)
 			endif
 			if(tmp(61:68)=="INTERVAL")then
                 read(tmp,'(f10.3)')rnxohd%interval
+				if(rnxohd%interval==0)then
+					rnxohd%interval=30
+				endif
             endif
             if(tmp(61:77)=="TIME OF FIRST OBS")then
                 read(tmp,'(5i6,f13.7)')cal1%year,cal1%month,cal1%day,cal1%hour,cal1%minute,cal1%second
@@ -253,9 +256,15 @@ subroutine read_rinex_data(rnxohd,rnxodt,flag,epochsum)
 					pos(i)=get_satpos(prn)
 					rnxodt(epoch)%satobsdata(pos(i))%prn=prn
 					if(pos(i)/=0)then
+						if(.not.allocated(rnxodt(epoch)%satobsdata(pos(i))%obs))then
 						allocate(rnxodt(epoch)%satobsdata(pos(i))%obs(rnxohd%obstypenumber))
+						endif
+						if(.not.allocated(rnxodt(epoch)%satobsdata(pos(i))%lli))then
 						allocate(rnxodt(epoch)%satobsdata(pos(i))%lli(rnxohd%obstypenumber))
+						endif
+						if(.not.allocated(rnxodt(epoch)%satobsdata(pos(i))%signalstrength))then
 						allocate(rnxodt(epoch)%satobsdata(pos(i))%signalstrength(rnxohd%obstypenumber))
+						endif
 					endif
 				enddo
 			else
@@ -314,9 +323,15 @@ subroutine read_rinex_data(rnxohd,rnxodt,flag,epochsum)
 				rnxodt(epoch)%satobsdata(pos(1))%prn=tmp(1:3)
 				ix=index('GCE',tmp(1:1))    
 				if(pos(1)/=0)then
+					if(.not.allocated(rnxodt(epoch)%satobsdata(pos(1))%obs))then
                     allocate(rnxodt(epoch)%satobsdata(pos(1))%obs(obstypenumber(ix)))
+					endif
+					if(.not.allocated(rnxodt(epoch)%satobsdata(pos(1))%lli))then
                     allocate(rnxodt(epoch)%satobsdata(pos(1))%lli(obstypenumber(ix)))
+					endif
+					if(.not.allocated(rnxodt(epoch)%satobsdata(pos(1))%signalstrength))then
                     allocate(rnxodt(epoch)%satobsdata(pos(1))%signalstrength(obstypenumber(ix)))
+					endif
                 endif
 				if(ix/=0)then
 					flag(epoch,pos(1))=0
